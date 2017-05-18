@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -25,7 +26,16 @@ var (
 
 func secretString(s string) (string, error) {
 	if strings.HasPrefix(s, "@") {
-		b, err := ioutil.ReadFile(s[1:])
+		fn := s[1:]
+		st, err := os.Stat(fn)
+		if err != nil {
+			return "", err
+		}
+		p := st.Mode() & os.ModePerm
+		if p&0177 > 0 {
+			return "", fmt.Errorf("valid permissions for %q is %0o, was %0o", fn, 0600, p)
+		}
+		b, err := ioutil.ReadFile(fn)
 		return strings.TrimSpace(string(b)), err
 	}
 	return s, nil
