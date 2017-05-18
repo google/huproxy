@@ -94,7 +94,7 @@ func main() {
 		},
 	}
 
-	log.Printf("huproxy")
+	log.Printf("huproxy %s", huproxy.Version)
 	m := mux.NewRouter()
 	m.HandleFunc("/proxy/{host}/{port}", handleProxy)
 	s := &http.Server{

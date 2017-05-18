@@ -8,6 +8,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+const (
+	Version = "0.01"
+)
+
 func File2WS(ctx context.Context, cancel func(), src io.Reader, dst *websocket.Conn) error {
 	defer cancel()
 	for {
