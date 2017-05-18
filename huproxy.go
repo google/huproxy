@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	listen           = flag.String("listen", ":8086", "Address to listen to.")
+	listen           = flag.String("listen", "127.0.0.1:8086", "Address to listen to.")
 	dialTimeout      = flag.Duration("dial_timeout", 10*time.Second, "Dial timeout.")
 	handshakeTimeout = flag.Duration("handshake_timeout", 10*time.Second, "Handshake timeout.")
 	writeTimeout     = flag.Duration("write_timeout", 10*time.Second, "Write timeout.")
