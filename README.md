@@ -28,6 +28,12 @@ location /proxy {
 }
 ```
 
+Start proxy:
+
+```
+./huproxy
+```
+
 ## Running
 
 These commands assume that HTTPS is used. If not, then change "wss://"
@@ -38,7 +44,7 @@ echo thomas:secretpassword > ~/.huproxy.pw
 chmod 600 ~/.huproxy.pw
 cat >> ~/.ssh/config << EOF
 Host shell.example.com
-    ProxyCommand ./huproxyclient -auth=@$HOME/.huproxy.pw wss://proxy.example.com/proxy/%h/%p
+    ProxyCommand /path/to/huproxyclient -auth=@$HOME/.huproxy.pw wss://proxy.example.com/proxy/%h/%p
 EOF
 
 ssh shell.example.com
