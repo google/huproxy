@@ -30,7 +30,7 @@ map $http_upgrade $connection_upgrade {
 location /proxy {
     auth_basic "Proxy";
     auth_basic_user_file /etc/nginx/users.proxy;
-    proxy_pass http://127.0.0.1:8999;
+    proxy_pass http://127.0.0.1:8086;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     # proxy_set_header Connection "upgrade";
