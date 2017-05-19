@@ -1,5 +1,15 @@
 # HUProxy
 
+Copyright 2017 Google Inc.
+
+This is not a Google product.
+
+HTTP(S)-Upgrade Proxy — Tunnel anything (but primarily SSH) over HTTP
+websockets.
+
+The reason for not simply using a SOCKS proxy or similar is that they tend to
+take up an entire port, while huproxy only takes up a single URL subdirectory.
+
 ## Setup
 
 ### nginx
