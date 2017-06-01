@@ -20,7 +20,7 @@ but they:
    the web server be the primary owner of port 443.
 2. For SSH don't look like SSL for packet inspectors, because they're not.
 3. Hide the original client address from the web server (without some
-   [interesting iptables magic](https://github.com/yrutschle/sslh#transparent-proxy-support).
+   [interesting iptables magic](https://github.com/yrutschle/sslh#transparent-proxy-support)).
 4. Only allow connecting to the server itself, not treat it as a proxy jumpgate.
 
 ## Setup
