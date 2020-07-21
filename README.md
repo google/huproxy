@@ -56,6 +56,11 @@ Start proxy:
 ```
 ./huproxy
 ```
+Start proxy with specific <IP:port>:
+
+```
+./huproxy -listen 10.1.2.3:8086
+```
 
 ## Running
 
