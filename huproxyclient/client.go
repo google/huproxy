@@ -15,6 +15,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -35,6 +36,7 @@ var (
 	writeTimeout = flag.Duration("write_timeout", 10*time.Second, "Write timeout")
 	basicAuth    = flag.String("auth", "", "HTTP Basic Auth in @<filename> or <username>:<password> format.")
 	verbose      = flag.Bool("verbose", false, "Verbose.")
+	insecure     = flag.Bool("insecure_conn", false, "Skip certificate validation")
 )
 
 func secretString(s string) (string, error) {
@@ -85,7 +87,15 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	dialer := websocket.Dialer{}
+	var tlsConfig *tls.Config
+	if *insecure {
+		tlsConfig = &tls.Config{InsecureSkipVerify: true}
+	} else {
+		tlsConfig = nil
+	}
+	dialer := websocket.Dialer{
+		TLSClientConfig: tlsConfig,
+	}
 	head := map[string][]string{}
 
 	// Add basic auth.
