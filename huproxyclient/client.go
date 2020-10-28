@@ -87,14 +87,9 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var tlsConfig *tls.Config
+	dialer := websocket.Dialer{}
 	if *insecure {
-		tlsConfig = &tls.Config{InsecureSkipVerify: true}
-	} else {
-		tlsConfig = nil
-	}
-	dialer := websocket.Dialer{
-		TLSClientConfig: tlsConfig,
+		dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 	head := map[string][]string{}
 
