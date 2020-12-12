@@ -35,8 +35,8 @@ import (
 var (
 	writeTimeout = flag.Duration("write_timeout", 10*time.Second, "Write timeout")
 	basicAuth    = flag.String("auth", "", "HTTP Basic Auth in @<filename> or <username>:<password> format.")
-	certFile	 = flag.String("cert", "", "Certificate Auth File")
-	keyFile		 = flag.String("key", "", "Certificate Key File")
+	certFile     = flag.String("cert", "", "Certificate Auth File")
+	keyFile      = flag.String("key", "", "Certificate Key File")
 	verbose      = flag.Bool("verbose", false, "Verbose.")
 	insecure     = flag.Bool("insecure_conn", false, "Skip certificate validation")
 )
