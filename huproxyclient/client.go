@@ -35,6 +35,8 @@ import (
 var (
 	writeTimeout = flag.Duration("write_timeout", 10*time.Second, "Write timeout")
 	basicAuth    = flag.String("auth", "", "HTTP Basic Auth in @<filename> or <username>:<password> format.")
+	certFile     = flag.String("cert", "", "Certificate Auth File")
+	keyFile      = flag.String("key", "", "Certificate Key File")
 	verbose      = flag.Bool("verbose", false, "Verbose.")
 	insecure     = flag.Bool("insecure_conn", false, "Skip certificate validation")
 )
@@ -88,8 +90,9 @@ func main() {
 	defer cancel()
 
 	dialer := websocket.Dialer{}
+	dialer.TLSClientConfig = new(tls.Config)
 	if *insecure {
-		dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		dialer.TLSClientConfig.InsecureSkipVerify = true
 	}
 	head := map[string][]string{}
 
@@ -103,6 +106,16 @@ func main() {
 		head["Authorization"] = []string{
 			"Basic " + a,
 		}
+	}
+
+	// Load client cert
+	if *certFile != "" {
+		cert, err := tls.LoadX509KeyPair(*certFile, *keyFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		dialer.TLSClientConfig.Certificates = []tls.Certificate{cert}
 	}
 
 	conn, resp, err := dialer.Dial(url, head)
