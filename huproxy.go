@@ -34,7 +34,7 @@ var (
 	dialTimeout      = flag.Duration("dial_timeout", 10*time.Second, "Dial timeout.")
 	handshakeTimeout = flag.Duration("handshake_timeout", 10*time.Second, "Handshake timeout.")
 	writeTimeout     = flag.Duration("write_timeout", 10*time.Second, "Write timeout.")
-	url              = flag.String("url", "proxy", "Address to listen to.")
+	url              = flag.String("url", "proxy", "Path to listen to.")
 
 	upgrader websocket.Upgrader
 )
