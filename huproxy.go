@@ -111,8 +111,7 @@ func main() {
 
 	log.Printf("huproxy %s", huproxy.Version)
 	m := mux.NewRouter()
-	fullUrl := fmt.Sprintf("/%s/{host}/{port}", *url)
-	m.HandleFunc(fullUrl, handleProxy)
+	m.HandleFunc(fmt.Sprintf("/%s/{host}/{port}", *url), handleProxy)
 	s := &http.Server{
 		Addr:           *listen,
 		Handler:        m,
