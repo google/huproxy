@@ -16,6 +16,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -33,6 +34,7 @@ var (
 	dialTimeout      = flag.Duration("dial_timeout", 10*time.Second, "Dial timeout.")
 	handshakeTimeout = flag.Duration("handshake_timeout", 10*time.Second, "Handshake timeout.")
 	writeTimeout     = flag.Duration("write_timeout", 10*time.Second, "Write timeout.")
+	url              = flag.String("url", "proxy", "Address to listen to.")
 
 	upgrader websocket.Upgrader
 )
@@ -109,7 +111,8 @@ func main() {
 
 	log.Printf("huproxy %s", huproxy.Version)
 	m := mux.NewRouter()
-	m.HandleFunc("/proxy/{host}/{port}", handleProxy)
+	fullUrl := fmt.Sprintf("/%s/{host}/{port}", *url)
+	m.HandleFunc(fullUrl, handleProxy)
 	s := &http.Server{
 		Addr:           *listen,
 		Handler:        m,
