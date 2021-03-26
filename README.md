@@ -42,7 +42,7 @@ map $http_upgrade $connection_upgrade {
 }
 
 server {
-    ...
+    # ... other config
     location /proxy {
         auth_basic "Proxy";
         auth_basic_user_file /etc/nginx/users.proxy;
@@ -52,6 +52,7 @@ server {
         # proxy_set_header Connection "upgrade";
         proxy_set_header Connection $connection_upgrade;
     }
+    # ... other config
 }
 
 ```
