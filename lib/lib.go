@@ -16,8 +16,8 @@ package lib
 import (
 	"context"
 	"io"
-	"log"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
 
@@ -25,6 +25,8 @@ const (
 	Version = "0.01"
 )
 
+// File2WS copies everything from the reader into the websocket,
+// stopping on error or context cancellation.
 func File2WS(ctx context.Context, cancel func(), src io.Reader, dst *websocket.Conn) error {
 	defer cancel()
 	for {
@@ -39,7 +41,7 @@ func File2WS(ctx context.Context, cancel func(), src io.Reader, dst *websocket.C
 		}
 		//log.Printf("->ws %d bytes: %q", len(b), string(b))
 		if err := dst.WriteMessage(websocket.BinaryMessage, b); err != nil {
-			log.Println(err)
+			log.Warningf("Writing websockt message: %v", err)
 			return err
 		}
 	}

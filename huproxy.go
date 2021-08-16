@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2017-2021 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 
 	huproxy "github.com/google/huproxy/lib"
 )
@@ -49,16 +49,17 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		log.Warningf("Failed to upgrade to websockets: %v", err)
 		return
 	}
 	defer conn.Close()
 
 	s, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), *dialTimeout)
 	if err != nil {
-		log.Println(err)
+		log.Warningf("Failed to connect to %q:%q: %v", host, port, err)
 		return
 	}
+	defer s.Close()
 
 	// websocket -> server
 	go func() {
@@ -71,13 +72,15 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			if err != nil {
-				log.Fatalf("nextreader: %v", err)
+				log.Errorf("nextreader: %v", err)
+				return
 			}
 			if mt != websocket.BinaryMessage {
-				log.Fatal("blah")
+				log.Errorf("received non-binary websocket message")
+				return
 			}
 			if _, err := io.Copy(s, r); err != nil {
-				log.Printf("Reading from websocket: %v", err)
+				log.Warningf("Reading from websocket: %v", err)
 				cancel()
 			}
 		}
@@ -90,10 +93,10 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 			websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""),
 			time.Now().Add(*writeTimeout)); err == websocket.ErrCloseSent {
 		} else if err != nil {
-			log.Printf("Error sending close message: %v", err)
+			log.Warningf("Error sending close message: %v", err)
 		}
 	} else if err != nil {
-		log.Printf("Reading from file: %v", err)
+		log.Warningf("Reading from file: %v", err)
 	}
 }
 
@@ -109,7 +112,7 @@ func main() {
 		},
 	}
 
-	log.Printf("huproxy %s", huproxy.Version)
+	log.Infof("huproxy %s", huproxy.Version)
 	m := mux.NewRouter()
 	m.HandleFunc(fmt.Sprintf("/%s/{host}/{port}", *url), handleProxy)
 	s := &http.Server{
