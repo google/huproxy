@@ -26,6 +26,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aus/proxyplease"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 
@@ -89,7 +90,15 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	dialer := websocket.Dialer{}
+	dialContext := proxyplease.NewDialContext(proxyplease.Proxy{})
+
+	dialer := websocket.Dialer{
+		ReadBufferSize:   1024,
+		WriteBufferSize:  1024,
+		HandshakeTimeout: 45 * time.Second,
+		NetDialContext:   dialContext,
+	}
+
 	dialer.TLSClientConfig = new(tls.Config)
 	if *insecure {
 		dialer.TLSClientConfig.InsecureSkipVerify = true
