@@ -1,4 +1,4 @@
-// Copyright 2017-2021 Google Inc.
+// Copyright 2017-2022 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aus/proxyplease"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 
@@ -89,7 +90,14 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	dialer := websocket.Dialer{}
+	dialContext := proxyplease.NewDialContext(proxyplease.Proxy{})
+
+	dialer := websocket.Dialer{
+		// It's not documented if handshake timeout defaults.
+		HandshakeTimeout: websocket.DefaultDialer.HandshakeTimeout,
+		NetDialContext:   dialContext,
+	}
+
 	dialer.TLSClientConfig = new(tls.Config)
 	if *insecure {
 		dialer.TLSClientConfig.InsecureSkipVerify = true
