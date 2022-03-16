@@ -98,9 +98,8 @@ func main() {
 		NetDialContext:   dialContext,
 	}
 
-	dialer.TLSClientConfig = new(tls.Config)
-	if *insecure {
-		dialer.TLSClientConfig.InsecureSkipVerify = true
+	dialer.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: *insecure,
 	}
 	head := map[string][]string{}
 
