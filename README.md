@@ -1,3 +1,5 @@
+# MOVED TO https://github.com/ThomasHabets/huproxy
+
 # HUProxy
 
 Copyright 2017 Google Inc.
